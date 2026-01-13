@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 
 import os
 
-from networks import *
-
 from cil.utilities.display import show2D
 
 if __name__ == "__main__":
@@ -15,7 +13,7 @@ if __name__ == "__main__":
     except:
         pass
 
-    """try:
+    try:
         os.mkdir(save_folder + "chest/")
     except:
         pass
@@ -27,14 +25,25 @@ if __name__ == "__main__":
     y_brain = np.load(save_folder + "chest/recon_brain.npy")
     y_both = np.load(save_folder + "chest/recon_both.npy")
 
-    for j in range(y_true.shape[0]):
-        print(j)
+    rmse_fbp = np.mean((y_fbp - y_true)**2, axis = (1,2))**(1/2)
+    rmse_tv = np.mean((y_tv - y_true)**2, axis = (1,2))**(1/2)
+    rmse_chest = np.mean((y_chest - y_true)**2, axis = (1,2))**(1/2)
+    rmse_brain = np.mean((y_brain - y_true)**2, axis = (1,2))**(1/2)
+    rmse_both = np.mean((y_both - y_true)**2, axis = (1,2))**(1/2)
 
-        #fig,a = plt.subplots(1,3)
-        #a[0].imshow(y_true[j,:,:], vmin = 0, vmax = 1, cmap = 'gray')
-        #a[1].imshow(x[j,:,:], vmin = 0, vmax = 1, cmap = 'gray')
-        #a[2].imshow(y[j,:,:], vmin = 0, vmax = 1, cmap = 'gray')
+    
+    rmses = [rmse_fbp, rmse_tv, rmse_chest, rmse_brain, rmse_both]
+    fig,ax = plt.subplots(1,1)
+    ax.violinplot(rmses,
+                  showmeans=False,
+                  showmedians=True)
+    
+    ax.set_xticks([y + 1 for y in range(len(rmses))],
+                  labels=['FBP', 'TV', 'Chest', 'Brain', 'Both'])
+    plt.savefig(save_folder + "chest/hist.png")
+    plt.close()
 
+    """for j in range(y_true.shape[0]):
         show2D([y_true[j,:,:],  y_fbp[j,:,:], y_tv[j,:,:], y_chest[j,:,:], y_brain[j,:,:], y_both[j,:,:]], title = ["True", "FBP", "TV", "Chest PNP", "Brain PNP", "Both PNP"], fix_range = True)
         plt.savefig(save_folder + "chest/image_{}.png".format(j))
         plt.close()"""
@@ -52,14 +61,26 @@ if __name__ == "__main__":
     y_brain = np.load(save_folder + "brain/recon_brain.npy")
     y_both = np.load(save_folder + "brain/recon_both.npy")
 
-    for j in range(y_true.shape[0]):
-        print(j)
 
-        #fig,a = plt.subplots(1,3)
-        #a[0].imshow(y_true[j,:,:], vmin = 0, vmax = 1, cmap = 'gray')
-        #a[1].imshow(x[j,:,:], vmin = 0, vmax = 1, cmap = 'gray')
-        #a[2].imshow(y[j,:,:], vmin = 0, vmax = 1, cmap = 'gray')
+    rmse_fbp = np.mean((y_fbp - y_true)**2, axis = (1,2))**(1/2)
+    rmse_tv = np.mean((y_tv - y_true)**2, axis = (1,2))**(1/2)
+    rmse_chest = np.mean((y_chest - y_true)**2, axis = (1,2))**(1/2)
+    rmse_brain = np.mean((y_brain - y_true)**2, axis = (1,2))**(1/2)
+    rmse_both = np.mean((y_both - y_true)**2, axis = (1,2))**(1/2)
 
+    
+    rmses = [rmse_fbp, rmse_tv, rmse_chest, rmse_brain, rmse_both]
+    fig,ax = plt.subplots(1,1)
+    ax.violinplot(rmses,
+                  showmeans=False,
+                  showmedians=True)
+    
+    ax.set_xticks([y + 1 for y in range(len(rmses))],
+                  labels=['FBP', 'TV', 'Chest', 'Brain', 'Both'])
+    plt.savefig(save_folder + "brain/hist.png")
+    plt.close()
+
+    """for j in range(y_true.shape[0]):
         show2D([y_true[j,:,:],  y_fbp[j,:,:], y_tv[j,:,:], y_chest[j,:,:], y_brain[j,:,:], y_both[j,:,:]], title = ["True", "FBP", "TV", "Chest PNP", "Brain PNP", "Both PNP"], fix_range = True)
         plt.savefig(save_folder + "brain/image_{}.png".format(j))
-        plt.close()
+        plt.close()"""

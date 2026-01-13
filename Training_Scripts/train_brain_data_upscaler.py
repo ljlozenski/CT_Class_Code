@@ -2,6 +2,8 @@ import numpy as np
 import torch
 import matplotlib.pyplot as plt
 
+import sys
+sys.path.append("./")
 from networks import *
 
 def upscale_data(x):

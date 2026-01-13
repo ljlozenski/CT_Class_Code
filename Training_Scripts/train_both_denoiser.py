@@ -2,6 +2,8 @@ import numpy as np
 import torch
 import matplotlib.pyplot as plt
 
+import sys
+sys.path.append("./")
 from networks import *
 
 if __name__ == "__main__":
@@ -18,7 +20,7 @@ if __name__ == "__main__":
     X_train = torch.unsqueeze(torch.from_numpy(x_train),1)
     X_test = torch.unsqueeze(torch.from_numpy(x_test),1)
 
-    net = ImageUNet().to(dev)
+    net = Denoiser().to(dev)
 
     num_batches = 40
     num_epochs = 3*10**2
@@ -33,7 +35,7 @@ if __name__ == "__main__":
 
     std = np.mean(x_train**2)**(1/2)
     
-    noise_levels = [0.05]
+    noise_levels = [0.2]
 
 
 
@@ -61,7 +63,7 @@ if __name__ == "__main__":
                 X = torch.rot90(X, k=nrot, dims=(-2, -1))"""
             Xn = X + noise_level*std*torch.randn(size = X.size(), device = dev)
 
-            out = Xn - 0.05*0.25*net(Xn)
+            out = net(Xn)
 
             loss = torch.mean((out - X)**2)
             train_loss += loss.item()/num_batches
@@ -83,9 +85,7 @@ if __name__ == "__main__":
                 noise_level = np.random.choice(noise_levels)
                 X = X_test[b::num_batches,:,:,:].to(dev)
                 Xn = X + noise_level*std*torch.randn(size = X.size(), device = dev)
-            
-
-                out = Xn - 0.05*0.25*net(Xn)
+                out = net(X)
 
                 loss = torch.mean((out - X)**2)
                 test_loss += loss.item()/num_batches

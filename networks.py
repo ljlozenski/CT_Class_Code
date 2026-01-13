@@ -114,6 +114,12 @@ class ImageUNet(torch.nn.Module):
 
         return x0
 
+class Denoiser(torch.nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.unet = ImageUNet()
+    def forward(self,x):
+        return x - 0.2*0.25*self.unet(x)
 
 class MeasurementEncoder(torch.nn.Module):
     def __init__(self, nc0 = 16, nc1 = 32, nc2 = 64, nc3 = 128, nc4 = 256):
@@ -330,103 +336,6 @@ class DataUNet(torch.nn.Module):
         x0 = self.layer_05(x0)
 
         return x0
-    
-class AttentionalLayer(torch.nn.Module):
-    def __init__(self, ny, nq):
-        super().__init__()
-
-        self.nq = nq
-
-        Wq = (2*torch.rand((ny, nq)) - 1)/np.sqrt(ny)
-        self.Wq = torch.nn.Parameter(Wq)
-
-        Wk = (2*torch.rand((ny, nq)) - 1)/np.sqrt(ny)
-        self.Wk = torch.nn.Parameter(Wk)
-
-        Wv = (2*torch.rand((ny, nq)) - 1)/np.sqrt(ny)
-        self.Wv = torch.nn.Parameter(Wv)
-        self.soft_max = torch.nn.Softmax(dim = 2)
-    def forward(self,x):
-        Q = torch.einsum('ijk, kl -> ijl', x, self.Wq)
-        K = torch.einsum('ijk, kl -> ijl', x, self.Wk)
-        V = torch.einsum('ijk, kl -> ijl', x, self.Wv)
-
-        QK = torch.einsum('ijk, ilk -> ijl', Q,K)/np.sqrt(self.nq)
-        QK = self.soft_max(QK)
-
-        return torch.einsum('ijk, ikl-> ijl', QK, V)
-        
-
-
-class MlpBlock(torch.nn.Module):
-    def __init__(self, nx, depth = 2):
-        super().__init__()
-        self.nx = nx
-        self.act = torch.nn.SiLU()
-        self.linears = torch.nn.ModuleList([torch.nn.Linear(nx,nx) for d in range(depth)])
-    
-    def forward(self,x):
-        x = torch.permute(x, (0,2,1))
-        shape = x.shape
-        x = x.reshape(-1, self.nx)
-
-        for l in self.linears:
-            x = self.act(l(x))
-        x = x.reshape(shape)
-        x = torch.permute(x, (0,2,1))
-        return x
-        
-
-class EncoderBlock(torch.nn.Module):
-    def __init__(self, nx, ny):
-        super().__init__()
-        self.norm1 = torch.nn.LayerNorm((nx,ny))
-        self.attention = AttentionalLayer(ny,ny)
-        self.norm2 = torch.nn.LayerNorm((nx,ny))
-        self.mlp = MlpBlock(nx)
-    def forward(self,x):
-        y = self.norm1(x)
-        y = self.attention(y)
-        x = x+y
-        y = self.norm2(x)
-        y = self.mlp(y)
-        return x + y
-
-class ImageClassifier(torch.nn.Module):
-    def __init__(self, depth = 4):
-        super().__init__()
-
-        self.window_size = 32
-        self.n_windows = 8
-        self.embed_dim = 32
-
-        #patch_embedding = (2*torch.rand((self.window_size**2, self.embed_dim)) - 1)/self.window_size
-        patch_embedding = (2*torch.rand((self.window_size**2, self.embed_dim)) - 1)#/self.window_size
-        self.patch_embedding = torch.nn.Parameter(patch_embedding)
-        self.patch_embedding.requires_grad = False
-
-        self.transformer_layers = torch.nn.ModuleList([EncoderBlock(self.n_windows**2, self.embed_dim) for d in range(depth)])
-
-        self.output_layer = torch.nn.Linear(self.n_windows**2*self.embed_dim, 1)
-        self.sig = torch.nn.Sigmoid()
-
-    
-    
-    def forward(self,x):
-        x = x.reshape((-1, self.n_windows, self.window_size, self.n_windows, self.window_size))
-        x = torch.permute(x, (0,1,3,2,4))
-        x = x.reshape((-1,self.n_windows**2, self.window_size**2))
-
-        x = torch.einsum('ijk, kl -> ijl', x, self.patch_embedding)
-        for l in self.transformer_layers:
-            x = l(x)
-        x = x.reshape((-1, self.n_windows**2*self.embed_dim))
-        x = self.output_layer(x)
-        return self.sig(x)
-        
-
-
-
 
 
 

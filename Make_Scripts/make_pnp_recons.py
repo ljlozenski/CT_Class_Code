@@ -7,8 +7,15 @@ from cil.optimisation.algorithms import FISTA, CGLS
 
 from cil.utilities.display import show2D
 import torch
+
+import sys
+sys.path.append("./")
 from networks import * 
 import os
+
+
+
+
 
 class PNP_Function(Function):
     def __init__(self, Net, c= 1):
@@ -17,25 +24,20 @@ class PNP_Function(Function):
         self.dev = next(Net.parameters()).get_device()
     def __call__(self, x):
         return 0
-    
-    
     def proximal(self,x, tau, out = None):
         X = torch.from_numpy(x.array).float().to(self.dev)
         X = torch.unsqueeze(X,0)
         X = torch.unsqueeze(X,0)
-        Xd = torch.squeeze(-0.05*0.25*self.net(X))
+        Xd = torch.squeeze(self.net(X))
         xd = Xd.cpu().detach().numpy()
-        
-
         if out is None:
             out = x*0
-        
         gamma = self.c*tau
         gamma = gamma/(1+ gamma)
-        #gamma = 0.25
         out.fill(gamma*xd)
-        out += x
+        out += (1-gamma)*x
         return out
+    
 
 
 if __name__ == "__main__":
@@ -56,15 +58,15 @@ if __name__ == "__main__":
 
 
     dev = torch.device('cuda:0')    
-    net_chest = ImageUNet().to(dev)
+    net_chest = Denoiser().to(dev)
     net_chest.load_state_dict(torch.load('State_Dictionaries/chest_denoiser'))
     net_chest.eval()
 
-    net_brain = ImageUNet().to(dev)
+    net_brain = Denoiser().to(dev)
     net_brain.load_state_dict(torch.load('State_Dictionaries/brain_denoiser'))
     net_brain.eval()
 
-    net_both = ImageUNet().to(dev)
+    net_both = Denoiser().to(dev)
     net_both.load_state_dict(torch.load('State_Dictionaries/both_denoiser'))
     net_both.eval()
 
@@ -84,7 +86,7 @@ if __name__ == "__main__":
     snr = 0.05
     std = snr*40
 
-    """try:
+    try:
         os.mkdir(save_folder + "chest/")
     except:
         pass
@@ -95,8 +97,8 @@ if __name__ == "__main__":
     recon_chest = np.zeros((Data.shape[0], N,N))
     recon_brain = np.zeros((Data.shape[0], N,N))
     recon_both = np.zeros((Data.shape[0], N,N))
-    recon_tv = np.zeros((Data.shape[0], N,N))
-    recon_fbp = np.zeros((Data.shape[0], N,N))
+    #recon_tv = np.zeros((Data.shape[0], N,N))
+    #recon_fbp = np.zeros((Data.shape[0], N,N))
 
     for j in range(Data.shape[0]):
         print(j)
@@ -116,16 +118,16 @@ if __name__ == "__main__":
         fista_both.run(100)
         recon_both[j,:,:] = fista_both.solution.array
     
-        fista_tv = FISTA(f = F, g = G_Tv, initial = x0)
-        fista_tv.run(100)
-        recon_tv[j,:,:] = fista_tv.solution.array
-        recon_fbp[j,:,:] = FBP(data, ig, backend='astra',filter='ram-lak').run(verbose=0).array
+        #fista_tv = FISTA(f = F, g = G_Tv, initial = x0)
+        #fista_tv.run(100)
+        #recon_tv[j,:,:] = fista_tv.solution.array
+        #recon_fbp[j,:,:] = FBP(data, ig, backend='astra',filter='ram-lak').run(verbose=0).array
 
     np.save(save_folder + "chest/recon_chest", recon_chest)
     np.save(save_folder + "chest/recon_brain", recon_brain)
     np.save(save_folder + "chest/recon_both", recon_both)
-    np.save(save_folder + "chest/recon_tv", recon_tv)
-    np.save(save_folder + "chest/recon_fbp", recon_fbp)"""
+    #np.save(save_folder + "chest/recon_tv", recon_tv)
+    #np.save(save_folder + "chest/recon_fbp", recon_fbp)
 
     try:
         os.mkdir(save_folder + "brain/")
@@ -135,17 +137,17 @@ if __name__ == "__main__":
     Data += std*np.random.standard_normal(Data.shape)
     Data = Data.astype(np.float32)
 
-    #recon_chest = np.zeros((Data.shape[0], N,N))
-    #recon_brain = np.zeros((Data.shape[0], N,N))
-    #recon_both = np.zeros((Data.shape[0], N,N))
+    recon_chest = np.zeros((Data.shape[0], N,N))
+    recon_brain = np.zeros((Data.shape[0], N,N))
+    recon_both = np.zeros((Data.shape[0], N,N))
     #recon_tv = np.zeros((Data.shape[0], N,N))
-    recon_fbp = np.zeros((Data.shape[0], N,N))
+    #recon_fbp = np.zeros((Data.shape[0], N,N))
 
     for j in range(Data.shape[0]):
         print(j)
 
         data.array = Data[j,:,:]
-        """F = LeastSquares(A = A, b = data, c = 0.5)
+        F = LeastSquares(A = A, b = data, c = 0.5)
 
         fista_chest = FISTA(f = F, g = G_chest, initial = x0)
         fista_chest.run(100)
@@ -159,16 +161,16 @@ if __name__ == "__main__":
         fista_both.run(100)
         recon_both[j,:,:] = fista_both.solution.array
 
-        fista_tv = FISTA(f = F, g = G_Tv, initial = x0)
-        fista_tv.run(100)
-        recon_tv[j,:,:] = fista_tv.solution.array"""
+        #fista_tv = FISTA(f = F, g = G_Tv, initial = x0)
+        #fista_tv.run(100)
+        #recon_tv[j,:,:] = fista_tv.solution.array
 
-        recon_fbp[j,:,:] = FBP(data, ig, backend='astra',filter='ram-lak').run(verbose=0).array
+        #recon_fbp[j,:,:] = FBP(data, ig, backend='astra',filter='ram-lak').run(verbose=0).array
 
-    #np.save(save_folder + "brain/recon_chest", recon_chest)
-    #np.save(save_folder + "brain/recon_brain", recon_brain)
-    #np.save(save_folder + "brain/recon_both", recon_both)
+    np.save(save_folder + "brain/recon_chest", recon_chest)
+    np.save(save_folder + "brain/recon_brain", recon_brain)
+    np.save(save_folder + "brain/recon_both", recon_both)
     #np.save(save_folder + "brain/recon_tv", recon_tv)
-    np.save(save_folder + "brain/recon_fbp", recon_fbp)
+    #np.save(save_folder + "brain/recon_fbp", recon_fbp)
 
 

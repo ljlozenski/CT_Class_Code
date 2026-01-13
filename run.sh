@@ -42,5 +42,5 @@
 source activate ct_class
 
 #python -u train_brain_artifact_remover.py
-python -u generate_pnp_recons.py
+python -u Make_Scripts/make_pnp_recons.py 
 
