@@ -99,7 +99,6 @@ if __name__ == "__main__":
     recon_fbp = np.zeros((Data.shape[0], N,N))
 
     for j in range(Data.shape[0]):
-        print(j)
 
         data.array = Data[j,:,:]
         F = LeastSquares(A = A, b = data, c = 0.5)
@@ -143,7 +142,6 @@ if __name__ == "__main__":
     recon_fbp = np.zeros((Data.shape[0], N,N))
 
     for j in range(Data.shape[0]):
-        print(j)
 
         data.array = Data[j,:,:]
         F = LeastSquares(A = A, b = data, c = 0.5)

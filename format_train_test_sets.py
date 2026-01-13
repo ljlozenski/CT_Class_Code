@@ -65,10 +65,8 @@ if __name__ == "__main__":
     for chest_test_path in chest_test_paths:
         chest_test_files = next(os.walk(chest_test_parent + chest_test_path), (None, None, []))[2]
         nchest_test = len(chest_test_files)
-        print(nchest_test)
         chest_testing_set = np.zeros((nchest_test, 256,256))
         for j in range(nchest_test):
-            print(j)
             file = chest_test_files[j]
             try:
                 chest = plt.imread(chest_test_parent + chest_test_path + file)[:,:,0]
