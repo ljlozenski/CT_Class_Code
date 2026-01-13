@@ -13,7 +13,7 @@ mkdir Datasets/
 curl -L -o Datasets/chest-ctscan-images.zip  https://www.kaggle.com/api/v1/datasets/download/mohamedhanyyy/chest-ctscan-images
 unzip Datasets/chest-ctscan-images.zip -d Datasets/chest_data
 
-curl -L -o ct-to-mri-cgan.zip https://www.kaggle.com/api/v1/datasets/download/darren2020/ct-to-mri-cgan
+curl -L -o Datasets/ct-to-mri-cgan.zip https://www.kaggle.com/api/v1/datasets/download/darren2020/ct-to-mri-cgan
 unzip Datasets/ct-to-mri-cgan.zip -d Datasets/brain_data
 
 mkdir Figures
