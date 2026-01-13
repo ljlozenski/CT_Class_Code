@@ -33,7 +33,6 @@ if __name__ == "__main__":
         Data_limited = np.zeros((gt.shape[0], na_limited, N))
 
         for j in range(gt.shape[0]):
-            print(label,j)
             X.array = gt[j,:,:]
             data = A.direct(X)
             Data[j,:,:] = data.array

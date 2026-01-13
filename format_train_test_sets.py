@@ -35,7 +35,6 @@ if __name__ == "__main__":
     for chest_train_path in chest_train_paths:
         chest_train_files = next(os.walk(chest_train_parent + chest_train_path), (None, None, []))[2]
         nchest_train = len(chest_train_files)
-        print(nchest_train)
         chest_training_set = np.zeros((nchest_train, 256,256))
         for j in range(nchest_train):
             file = chest_train_files[j]
@@ -46,9 +45,7 @@ if __name__ == "__main__":
             ny = chest.shape[1]
             m = int(np.ceil(ny/256))
             chest = chest[m-1::m, m-1::m]
-            #print(chest.shape)
             nx, ny = chest.shape
-            #print(nx,ny, chest_train_parent + chest_train_path + file)
             dx0 = int(np.floor((256-nx)/2))
             dx1 = int(np.ceil((256-nx)/2))
             dy0 = int(np.floor((256-ny)/2))
@@ -75,9 +72,7 @@ if __name__ == "__main__":
             ny = chest.shape[1]
             m = int(np.ceil(ny/256))
             chest = chest[m-1::m, m-1::m]
-            #print(chest.shape)
             nx, ny = chest.shape
-            #print(nx,ny, chest_test_parent + chest_test_path + file)
             dx0 = int(np.floor((256-nx)/2))
             dx1 = int(np.ceil((256-nx)/2))
             dy0 = int(np.floor((256-ny)/2))

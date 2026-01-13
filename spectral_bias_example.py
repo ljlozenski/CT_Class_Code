@@ -52,7 +52,7 @@ if __name__ == "__main__":
         loss = torch.mean((out - Pt)**2)
         loss.backward()
         opt.step()
-        print(it, loss.item()**(1/2))
+        print("Iteration ", it, " RRMSE: " loss.item()**(1/2))
     O = net(xy)[:,0].cpu().detach().numpy()
     O = O.reshape((n,n))
 
