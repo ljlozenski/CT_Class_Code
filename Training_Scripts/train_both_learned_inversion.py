@@ -27,7 +27,7 @@ if __name__ == "__main__":
     net = LearndInversion().to(dev)
 
     num_batches = 40
-    num_epochs = 350#10**3
+    num_epochs = 200
 
     optimizer = torch.optim.Adam(net.parameters(), lr = 1e-4)
 

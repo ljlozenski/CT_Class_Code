@@ -23,7 +23,7 @@ if __name__ == "__main__":
     net = Denoiser().to(dev)
 
     num_batches = 40
-    num_epochs = 3*10**2
+    num_epochs = 150
 
     optimizer = torch.optim.Adam(net.parameters(), lr = 1e-4)
 
@@ -85,7 +85,8 @@ if __name__ == "__main__":
                 noise_level = np.random.choice(noise_levels)
                 X = X_test[b::num_batches,:,:,:].to(dev)
                 Xn = X + noise_level*std*torch.randn(size = X.size(), device = dev)
-                out = net(X)
+
+                out = net(Xn)
 
                 loss = torch.mean((out - X)**2)
                 test_loss += loss.item()/num_batches

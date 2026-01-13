@@ -21,7 +21,7 @@ if __name__ == "__main__":
     net = Denoiser().to(dev)
 
     num_batches = 20
-    num_epochs = 3*10**2
+    num_epochs = 150
 
     optimizer = torch.optim.Adam(net.parameters(), lr = 1e-4)
 
@@ -63,6 +63,8 @@ if __name__ == "__main__":
             if nrot > 0:
                 X = torch.rot90(X, k=nrot, dims=(-2, -1))"""
             Xn = X + noise_level*std*torch.randn(size = X.size(), device = dev)
+
+            X = torch.randn(size = (256,256), device = dev)
 
             out = net(Xn)
 

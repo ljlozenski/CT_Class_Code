@@ -27,7 +27,7 @@ if __name__ == "__main__":
     net = ImageUNet().to(dev)
 
     num_batches = 40
-    num_epochs = 10**3
+    num_epochs = 300
 
     optimizer = torch.optim.Adam(net.parameters(), lr = 1e-4)
 

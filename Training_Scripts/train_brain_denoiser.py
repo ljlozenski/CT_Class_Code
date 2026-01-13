@@ -21,7 +21,7 @@ if __name__ == "__main__":
     net = Denoiser().to(dev)
 
     num_batches = 20
-    num_epochs = 3*10**2
+    num_epochs = 150
 
     optimizer = torch.optim.Adam(net.parameters(), lr = 1e-4)
 
