@@ -17,3 +17,4 @@ curl -L -o ct-to-mri-cgan.zip https://www.kaggle.com/api/v1/datasets/download/da
 unzip Datasets/ct-to-mri-cgan.zip -d Datasets/brain_data
 
 mkdir Figures
+mkdir State_Dictionaries/

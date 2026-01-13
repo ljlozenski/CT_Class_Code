@@ -18,6 +18,7 @@ if __name__ == "__main__":
     except:
         pass
     y_true = np.load("Datasets/chest_testing.npy").astype(np.float32)
+    y_true = y_true[:100,:,:]
 
     y_fbp = np.load(save_folder + "chest/recon_fbp.npy")
     y_tv = np.load(save_folder + "chest/recon_tv.npy")
@@ -43,10 +44,10 @@ if __name__ == "__main__":
     plt.savefig(save_folder + "chest/hist.png")
     plt.close()
 
-    """for j in range(y_true.shape[0]):
+    for j in range(y_true.shape[0]):
         show2D([y_true[j,:,:],  y_fbp[j,:,:], y_tv[j,:,:], y_chest[j,:,:], y_brain[j,:,:], y_both[j,:,:]], title = ["True", "FBP", "TV", "Chest PNP", "Brain PNP", "Both PNP"], fix_range = True)
         plt.savefig(save_folder + "chest/image_{}.png".format(j))
-        plt.close()"""
+        plt.close()
 
 
 
@@ -55,6 +56,7 @@ if __name__ == "__main__":
     except:
         pass
     y_true = np.load("Datasets/brain_testing.npy").astype(np.float32)
+    y_true = y_true[:100,:,:]
     y_fbp = np.load(save_folder + "brain/recon_fbp.npy")
     y_tv = np.load(save_folder + "brain/recon_tv.npy")
     y_chest = np.load(save_folder + "brain/recon_chest.npy")
@@ -80,7 +82,7 @@ if __name__ == "__main__":
     plt.savefig(save_folder + "brain/hist.png")
     plt.close()
 
-    """for j in range(y_true.shape[0]):
+    for j in range(y_true.shape[0]):
         show2D([y_true[j,:,:],  y_fbp[j,:,:], y_tv[j,:,:], y_chest[j,:,:], y_brain[j,:,:], y_both[j,:,:]], title = ["True", "FBP", "TV", "Chest PNP", "Brain PNP", "Both PNP"], fix_range = True)
         plt.savefig(save_folder + "brain/image_{}.png".format(j))
-        plt.close()"""
+        plt.close()

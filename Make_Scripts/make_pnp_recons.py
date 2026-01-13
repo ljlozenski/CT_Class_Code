@@ -13,10 +13,6 @@ sys.path.append("./")
 from networks import * 
 import os
 
-
-
-
-
 class PNP_Function(Function):
     def __init__(self, Net, c= 1):
         self.net = Net
@@ -90,15 +86,17 @@ if __name__ == "__main__":
         os.mkdir(save_folder + "chest/")
     except:
         pass
+
     Data = np.load("Datasets/chest_testing_data.npy")
+    Data = Data[:100,:,:]
     Data += std*np.random.standard_normal(Data.shape)
     Data = Data.astype(np.float32)
 
     recon_chest = np.zeros((Data.shape[0], N,N))
     recon_brain = np.zeros((Data.shape[0], N,N))
     recon_both = np.zeros((Data.shape[0], N,N))
-    #recon_tv = np.zeros((Data.shape[0], N,N))
-    #recon_fbp = np.zeros((Data.shape[0], N,N))
+    recon_tv = np.zeros((Data.shape[0], N,N))
+    recon_fbp = np.zeros((Data.shape[0], N,N))
 
     for j in range(Data.shape[0]):
         print(j)
@@ -118,30 +116,31 @@ if __name__ == "__main__":
         fista_both.run(100)
         recon_both[j,:,:] = fista_both.solution.array
     
-        #fista_tv = FISTA(f = F, g = G_Tv, initial = x0)
-        #fista_tv.run(100)
-        #recon_tv[j,:,:] = fista_tv.solution.array
-        #recon_fbp[j,:,:] = FBP(data, ig, backend='astra',filter='ram-lak').run(verbose=0).array
+        fista_tv = FISTA(f = F, g = G_Tv, initial = x0)
+        fista_tv.run(100)
+        recon_tv[j,:,:] = fista_tv.solution.array
+        recon_fbp[j,:,:] = FBP(data, ig, backend='astra',filter='ram-lak').run(verbose=0).array
 
     np.save(save_folder + "chest/recon_chest", recon_chest)
     np.save(save_folder + "chest/recon_brain", recon_brain)
     np.save(save_folder + "chest/recon_both", recon_both)
-    #np.save(save_folder + "chest/recon_tv", recon_tv)
-    #np.save(save_folder + "chest/recon_fbp", recon_fbp)
+    np.save(save_folder + "chest/recon_tv", recon_tv)
+    np.save(save_folder + "chest/recon_fbp", recon_fbp)
 
     try:
         os.mkdir(save_folder + "brain/")
     except:
         pass
     Data = np.load("Datasets/brain_testing_data.npy")
+    Data = Data[:100,:,:]
     Data += std*np.random.standard_normal(Data.shape)
     Data = Data.astype(np.float32)
 
     recon_chest = np.zeros((Data.shape[0], N,N))
     recon_brain = np.zeros((Data.shape[0], N,N))
     recon_both = np.zeros((Data.shape[0], N,N))
-    #recon_tv = np.zeros((Data.shape[0], N,N))
-    #recon_fbp = np.zeros((Data.shape[0], N,N))
+    recon_tv = np.zeros((Data.shape[0], N,N))
+    recon_fbp = np.zeros((Data.shape[0], N,N))
 
     for j in range(Data.shape[0]):
         print(j)
@@ -161,16 +160,16 @@ if __name__ == "__main__":
         fista_both.run(100)
         recon_both[j,:,:] = fista_both.solution.array
 
-        #fista_tv = FISTA(f = F, g = G_Tv, initial = x0)
-        #fista_tv.run(100)
-        #recon_tv[j,:,:] = fista_tv.solution.array
+        fista_tv = FISTA(f = F, g = G_Tv, initial = x0)
+        fista_tv.run(100)
+        recon_tv[j,:,:] = fista_tv.solution.array
 
-        #recon_fbp[j,:,:] = FBP(data, ig, backend='astra',filter='ram-lak').run(verbose=0).array
+        recon_fbp[j,:,:] = FBP(data, ig, backend='astra',filter='ram-lak').run(verbose=0).array
 
     np.save(save_folder + "brain/recon_chest", recon_chest)
     np.save(save_folder + "brain/recon_brain", recon_brain)
     np.save(save_folder + "brain/recon_both", recon_both)
-    #np.save(save_folder + "brain/recon_tv", recon_tv)
-    #np.save(save_folder + "brain/recon_fbp", recon_fbp)
+    np.save(save_folder + "brain/recon_tv", recon_tv)
+    np.save(save_folder + "brain/recon_fbp", recon_fbp)
 
 
