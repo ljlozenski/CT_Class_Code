@@ -4,9 +4,12 @@ import matplotlib.pyplot as plt
 
 import os
 
+import sys
+sys.path.append('./')
 from networks import *
 
 from cil.utilities.display import show2D
+
 
 if __name__ == "__main__":
     save_folder = "Learned_Inversion_Results/"
@@ -15,8 +18,6 @@ if __name__ == "__main__":
     except:
         pass
     dev = torch.device('cuda:0')
-
-
     net_brain = LearndInversion().to(dev)
     net_brain.load_state_dict(torch.load('State_Dictionaries/brain_learned_inversion'))
     net_brain.eval()
@@ -50,20 +51,27 @@ if __name__ == "__main__":
         y_brain = np.squeeze(Y_brain.cpu().detach().numpy())
         Y_both = net_both(X)
         y_both = np.squeeze(Y_both.cpu().detach().numpy())
+    rmse_full = np.mean((z- y_true)**2,axis = (1,2))**(1/2)
+    rmse_limited = np.mean((x- y_true)**2,axis = (1,2))**(1/2)
+    rmse_chest = np.mean((y_chest - y_true)**2, axis = (1,2))**(1/2)
+    rmse_brain = np.mean((y_brain - y_true)**2, axis = (1,2))**(1/2)
+    rmse_both = np.mean((y_both - y_true)**2, axis = (1,2))**(1/2)
+
+    rmses = [rmse_full, rmse_limited, rmse_chest, rmse_brain, rmse_both]
+    fig,ax = plt.subplots(1,1)
+    ax.violinplot(rmses,
+                  showmeans=False,
+                  showmedians=True)
+    
+    ax.set_xticks([y + 1 for y in range(len(rmses))],
+                  labels=['Full', 'Limited', 'Chest', 'Brain', 'Both'])
+    plt.savefig(save_folder + "chest/hist.png")
+    plt.close()
 
     for j in range(x.shape[0]):
-        print(j)
-
-        #fig,a = plt.subplots(1,3)
-        #a[0].imshow(y_true[j,:,:], vmin = 0, vmax = 1, cmap = 'gray')
-        #a[1].imshow(x[j,:,:], vmin = 0, vmax = 1, cmap = 'gray')
-        #a[2].imshow(y[j,:,:], vmin = 0, vmax = 1, cmap = 'gray')
-
         show2D([y_true[j,:,:],  z[j,:,:], x[j,:,:], y_chest[j,:,:], y_brain[j,:,:], y_both[j,:,:]], title = ["True", "Full Recon", "Limited Recon", "Chest Learned Inversion", "Brain Learned Inversion", "Both Learned Inversion"], fix_range = True)
         plt.savefig(save_folder + "chest/image_{}.png".format(j))
         plt.close()
-
-
 
     try:
         os.mkdir(save_folder + "brain/")
@@ -84,18 +92,24 @@ if __name__ == "__main__":
         y_brain = np.squeeze(Y_brain.cpu().detach().numpy())
         Y_both = net_both(X)
         y_both = np.squeeze(Y_both.cpu().detach().numpy())
+
+    rmse_full = np.mean((z- y_true)**2,axis = (1,2))**(1/2)
+    rmse_limited = np.mean((x- y_true)**2,axis = (1,2))**(1/2)
+    rmse_chest = np.mean((y_chest - y_true)**2, axis = (1,2))**(1/2)
+    rmse_brain = np.mean((y_brain - y_true)**2, axis = (1,2))**(1/2)
+    rmse_both = np.mean((y_both - y_true)**2, axis = (1,2))**(1/2)
+
+    rmses = [rmse_full, rmse_limited, rmse_chest, rmse_brain, rmse_both]
+    fig,ax = plt.subplots(1,1)
+    ax.violinplot(rmses,
+                  showmeans=False,
+                  showmedians=True)
+    
+    ax.set_xticks([y + 1 for y in range(len(rmses))],
+                  labels=['Full', 'Limited', 'Chest', 'Brain', 'Both'])
+    plt.savefig(save_folder + "brain/hist.png")
+    plt.close()
     for j in range(x.shape[0]):
-        print(j)
-
-        #fig,a = plt.subplots(1,3)
-        #a[0].imshow(y_true[j,:,:], vmin = 0, vmax = 1, cmap = 'gray')
-        #a[1].imshow(x[j,:,:], vmin = 0, vmax = 1, cmap = 'gray')
-        #a[2].imshow(y[j,:,:], vmin = 0, vmax = 1, cmap = 'gray')
-
         show2D([y_true[j,:,:],  z[j,:,:], x[j,:,:], y_chest[j,:,:], y_brain[j,:,:], y_both[j,:,:]], title = ["True", "Full Recon", "Limited Recon", "Chest Learned Inversion", "Brain Learned Inversion", "Both Learned Inversion"], fix_range = True)
         plt.savefig(save_folder + "brain/image_{}.png".format(j))
         plt.close()
-
-
-    
-

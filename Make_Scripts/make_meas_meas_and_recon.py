@@ -24,6 +24,7 @@ if __name__ == "__main__":
 
 
     for label in input_labels:
+        print("Starting reconstructions on ", label)
         gt = np.load(parent_folder + label + ".npy")
 
         Recon = np.zeros(gt.shape)
@@ -33,6 +34,7 @@ if __name__ == "__main__":
         Data_limited = np.zeros((gt.shape[0], na_limited, N))
 
         for j in range(gt.shape[0]):
+            print(" Image {}/{}".format(j, gt.shape[0]))
             X.array = gt[j,:,:]
             data = A.direct(X)
             Data[j,:,:] = data.array

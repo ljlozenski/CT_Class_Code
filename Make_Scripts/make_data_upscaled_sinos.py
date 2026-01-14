@@ -6,7 +6,8 @@ from cil.recon import FBP
 import matplotlib.pyplot as plt
 
 import os
-
+import sys
+sys.path.path.append('./')
 from networks import *
 
 from cil.utilities.display import show2D
@@ -68,7 +69,6 @@ if __name__ == "__main__":
     
 
     for j in range(Data.shape[0]):
-        print(j)
         show2D([Data[j,:,:],  data_small[j,:,:], Data_small[j,:,:], data_chest[j,:,:], data_brain[j,:,:], data_both[j,:,:]], title = ["True Data", "Subsampled Data", "Copied Data", "Chest Upscaled Data", "Brain Upscaled Data", "Both Upscaled Data"], fix_range = True)
         plt.savefig(save_folder + "chest/sino_{}.png".format(j))
         plt.close()
@@ -96,7 +96,6 @@ if __name__ == "__main__":
     
 
     for j in range(Data.shape[0]):
-        print(j)
         show2D([Data[j,:,:],  data_small[j,:,:], Data_small[j,:,:], data_chest[j,:,:], data_brain[j,:,:], data_both[j,:,:]], title = ["True Data", "Subsampled Data", "Copied Data", "Chest Upscaled Data", "Brain Upscaled Data", "Both Upscaled Data"], fix_range = True)
         plt.savefig(save_folder + "brain/sino_{}.png".format(j))
         plt.close()

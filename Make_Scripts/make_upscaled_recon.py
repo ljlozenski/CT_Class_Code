@@ -6,6 +6,8 @@ from cil.recon import FBP
 
 import os
 
+import sys
+sys.path.append('./')
 from networks import *
 
 from cil.utilities.display import show2D
@@ -76,7 +78,9 @@ if __name__ == "__main__":
 
     data = ag.allocate()
 
+    print("Starting Brain Chest Data")
     for j in range(Data.shape[0]):
+        print(" Image {}/{}".format(j, Data.shape[0]))
         data.array = data_chest[j,:,:]
         recon = FBP(data, ig, backend='astra',filter='ram-lak').run(verbose=0)
         recon_chest[j,:,:] = recon.array
@@ -118,8 +122,9 @@ if __name__ == "__main__":
     recon_both = np.zeros((Data.shape[0], N,N))
 
     data = ag.allocate()
-
+    print("Starting Brain Data")
     for j in range(Data.shape[0]):
+        print(" Image {}/{}".format(j, Data.shape[0]))
         data.array = data_chest[j,:,:]
         recon = FBP(data, ig, backend='astra',filter='ram-lak').run(verbose=0)
         recon_chest[j,:,:] = recon.array

@@ -34,10 +34,6 @@ if __name__ == "__main__":
     net_both.load_state_dict(torch.load('State_Dictionaries/both_denoiser'))
     net_both.eval()
 
-
-
-    #noise_levels =  [0.001, 0.01, 0.1, 0.5, 1]
-    #noise_levels = [0.001, 0.01, 0.05, 0.1, 0.2]
     noise_level = 0.2
     
     try:
@@ -61,7 +57,6 @@ if __name__ == "__main__":
     x_cil = ig.allocate()
 
     for j in range(x_noisy.shape[0]):
-        print(j)
         x_cil.array = x_noisy[j,:,:]
         y_tv[j,:,:] = G.proximal(x_cil, 1.).array
 
@@ -99,16 +94,7 @@ if __name__ == "__main__":
 
     
 
-            
-
     for j in range(x.shape[0]):
-        print(j)
-
-        #fig,a = plt.subplots(1,3)
-        #a[0].imshow(y_true[j,:,:], vmin = 0, vmax = 1, cmap = 'gray')
-        #a[1].imshow(x[j,:,:], vmin = 0, vmax = 1, cmap = 'gray')
-        #a[2].imshow(y[j,:,:], vmin = 0, vmax = 1, cmap = 'gray')
-
         show2D([x[j,:,:],  x_noisy[j,:,:], y_tv[j,:,:], y_chest[j,:,:], y_brain[j,:,:], y_both[j,:,:]], title = ["True", "Noisy", "TV Denoiser", "Chest Denoiser", "Brain Denoiser", "Both Denoiser"], fix_range = True)
         plt.savefig(save_folder + "chest/image_{}.png".format(j))
         plt.close()
@@ -135,7 +121,6 @@ if __name__ == "__main__":
     x_cil = ig.allocate()
 
     for j in range(x_noisy.shape[0]):
-        print(j)
         x_cil.array = x_noisy[j,:,:]
         y_tv[j,:,:] =  G.proximal(x_cil, 1.).array
 
@@ -170,12 +155,7 @@ if __name__ == "__main__":
     plt.close()
 
     for j in range(x.shape[0]):
-        print(j)
 
-        #fig,a = plt.subplots(1,3)
-        #a[0].imshow(y_true[j,:,:], vmin = 0, vmax = 1, cmap = 'gray')
-        #a[1].imshow(x[j,:,:], vmin = 0, vmax = 1, cmap = 'gray')
-        #a[2].imshow(y[j,:,:], vmin = 0, vmax = 1, cmap = 'gray')
 
         show2D([x[j,:,:],  x_noisy[j,:,:], y_tv[j,:,:], y_chest[j,:,:], y_brain[j,:,:], y_both[j,:,:]], title = ["True", "Noisy", "TV Denoiser", "Chest Denoiser", "Brain Denoiser", "Both Denoiser"], fix_range = True)
         plt.savefig(save_folder + "brain/image_{}.png".format(j))

@@ -35,7 +35,7 @@ if __name__ == "__main__":
     net = DataUNet().to(dev)
 
     num_batches = 40
-    num_epochs = 300
+    num_epochs = 150
 
     optimizer = torch.optim.Adam(net.parameters(), lr = 1e-3)
 
