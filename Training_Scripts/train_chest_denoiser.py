@@ -64,7 +64,6 @@ if __name__ == "__main__":
                 X = torch.rot90(X, k=nrot, dims=(-2, -1))"""
             Xn = X + noise_level*std*torch.randn(size = X.size(), device = dev)
 
-            X = torch.randn(size = (256,256), device = dev)
 
             out = net(Xn)
 
